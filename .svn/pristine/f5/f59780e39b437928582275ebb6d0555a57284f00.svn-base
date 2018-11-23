@@ -1,0 +1,9 @@
+package com.xhu.dao;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.xhu.entity.User;
+
+public interface LoginDao {
+	public User selectByUsername(@Param("username")String username);
+}

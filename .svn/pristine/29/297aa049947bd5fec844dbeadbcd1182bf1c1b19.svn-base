@@ -1,0 +1,27 @@
+package com.xhu.serviceImp;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.xhu.dao.PermissionMapper;
+import com.xhu.entity.Node;
+import com.xhu.service.TreeService;
+import com.xhu.util.Tree;
+@Service
+public class TreeServiceImp implements TreeService{
+	@Autowired
+	private PermissionMapper permissionMapper;
+	@Autowired
+	private Tree tree;
+	@Override
+	public List<Node> createPerTree() {
+		System.out.println(11111);
+		LinkedList<Node> list = permissionMapper.searchPer("admin");
+		System.out.println(list);
+		return tree.createTree(list);
+	}
+
+}

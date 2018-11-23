@@ -1,0 +1,28 @@
+package com.xhu.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.xhu.entity.Node;
+import com.xhu.service.TreeService;
+
+@Controller
+public class NewsController {
+	@Autowired
+	private TreeService treeService;
+
+	@RequestMapping("main.do")
+	public String mainView() {
+		return "main";
+	}
+	@RequestMapping(method=RequestMethod.GET,value="createPreTree.do")
+	@ResponseBody
+	public List<Node> createPreTree(){
+		return treeService.createPerTree();
+	}
+}

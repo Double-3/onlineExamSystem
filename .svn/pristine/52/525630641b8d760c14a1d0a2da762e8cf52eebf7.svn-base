@@ -1,0 +1,20 @@
+package com.xhu.serviceImp;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.xhu.dao.LoginDao;
+import com.xhu.entity.User;
+import com.xhu.service.LoginService;
+
+@Service
+public class LoginServiceImp implements LoginService{
+	@Autowired
+	private LoginDao loginDao;
+
+	@Override
+	public User selectByUsername(String username) {
+		return loginDao.selectByUsername(username);
+	}
+	
+}

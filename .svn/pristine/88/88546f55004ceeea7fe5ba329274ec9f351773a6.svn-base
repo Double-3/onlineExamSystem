@@ -1,0 +1,268 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>表格-工具栏</title>
+<link href="<%=request.getContextPath()%>/lib/css/default/easyui.css"
+	type="text/css" rel="stylesheet">
+<link href="<%=request.getContextPath()%>/lib/css/icon.css"
+	type="text/css" rel="stylesheet">
+
+<script src="<%=request.getContextPath()%>/lib/js/jquery.min.js"></script>
+<script src="<%=request.getContextPath()%>/lib/js/jquery.easyui.min.js"></script>
+<script src="<%=request.getContextPath()%>/lib/js/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+	<!-- 工具栏 -->
+	<div id="tb">
+		<div style="margin-bottom: 5px">
+			<a href="javascript:addWin()" class="easyui-linkbutton"
+				iconCls="icon-add" plain="true">新增</a> <a
+				href="javascript:updateWin()" class="easyui-linkbutton"
+				iconCls="icon-edit" plain="true">修改</a> <a
+				href="javascript:delBat()" class="easyui-linkbutton"
+				iconCls="icon-edit" plain="true">批量删除</a>
+		</div>
+		<div>
+			题目：<input class="easyui-textbox" id="qContentSearch"> <a
+				href="javascript:search()" class="easyui-linkbutton"
+				iconCls="icon-search">查询</a>
+		</div>
+	</div>
+
+
+	<table id="myTable" toolbar="#tb"></table>
+
+
+	<div title="修改窗口" id="mywindow" class="easyui-window" draggable="false"
+		style="width: 400px; height: 300px; padding: 30px 30px">
+		<form id="myForm" method="post">
+			<div style="margin-bottom: 20px">
+				<span>题号:</span> <input class="easyui-textbox" id="qId" name="qId"
+					style="width: 80%; height: 32px"> <span style="color: red">*</span>
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>题目:</span> <input class="easyui-textbox" id="qContent"
+					name="qContent" style="width: 80%; height: 32px"> <span
+					style="color: red">*</span>
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>答案:</span> <input class="easyui-textbox" id="answer"
+					name="answer" style="width: 80%; height: 32px"> <span
+					style="color: red">*</span>
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>题型:</span> <input class="easyui-textbox" id="qType"
+					name="qType" style="width: 80%; height: 32px"> <span
+					style="color: red">*</span>
+			</div>
+			<div style="margin-bottom: 20px">
+				<a href="javascript:save()" class="easyui-linkbutton"
+					iconCls="icon-search" style="width: 80%; height: 32px">保存</a>
+			</div>
+		</form>
+	</div>
+
+	<div title="新增窗口" id="addwindow" class="easyui-window"
+		draggable="false"
+		style="width: 400px; height: 300px; padding: 30px 30px">
+		<form id="addForm" method="post">
+			<div style="margin-bottom: 20px">
+				<span>题号:</span> <input class="easyui-textbox" id="qId" name="qId"
+					style="width: 80%; height: 32px"> <span style="color: red">*</span>
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>题目:</span> <input class="easyui-textbox" id="qContent"
+					name="qContent" style="width: 80%; height: 32px"> <span
+					style="color: red">*</span>
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>答案A:</span> <input class="easyui-textbox" id="aoption"
+					name="aOption" style="width: 80%; height: 32px">
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>答案B:</span> <input class="easyui-textbox" id="boption"
+					name="bOption" style="width: 80%; height: 32px">
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>答案C:</span> <input class="easyui-textbox" id="coption"
+					name="cOption" style="width: 80%; height: 32px">
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>答案D:</span> <input class="easyui-textbox" id="doption"
+					name="dOption" style="width: 80%; height: 32px">
+
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>答案:</span> <input class="easyui-textbox" id="answer"
+					name="answer" style="width: 80%; height: 32px"> <span
+					style="color: red">*</span>
+			</div>
+			<div style="margin-bottom: 20px">
+				<span>题型:</span><select id="cc" class="easyui-combobox"
+					name="qType" style="width: 200px;">
+					<option value="1">单选题</option>
+					<option value="2">多选题</option>
+					<option value="3">判断题</option>
+				</select><span style="color: red">*</span>
+			</div>
+			<div style="margin-bottom: 20px">
+				<a href="javascript:add()" class="easyui-linkbutton"
+					iconCls="icon-search" style="width: 80%; height: 32px">添加</a>
+			</div>
+		</form>
+	</div>
+</body>
+<script>
+	//批量删除
+	function delBat() {
+		var row = $('#myTable').datagrid("getSelections");
+		var iddarr = "";
+		//
+		if (row != null & row.length > 0) {
+			for (var i = 0; i < row.length; i++) {
+				iddarr += row[i].q_id + ",";
+			}
+		} else {
+			$.messager.alert("信息提示", "你没有选中数据", "info")
+		}
+
+		console.log(iddarr);
+
+		$.post("delBat.do", {
+			"iddarr" : iddarr
+		}, function(data) {
+			if (data) {
+				$.messager.alert("信息提示", "删除成功", "info")
+			} else {
+				$.messager.alert("信息提示", "删除失败", "info")
+			}
+			//刷新
+			loadQuestion();
+
+		})
+
+	}
+	//添加
+	function add() {
+		$("#addForm").form("submit", {
+			url : "add.do",
+			onSubmit : function() {
+			},
+			success : function(data) {
+				if (data == 'success') {
+					$.messager.alert("信息提示", "添加成功", "info")
+				}
+			}
+		})
+	}
+	//打开新增窗口
+	function addWin() {
+		$("#addwindow").window("open");
+	}
+	//保存
+	function save() {
+		$("#myForm").form("submit", {
+			url : "update.do",
+			onSubmit : function() {
+			},
+			success : function(data) {
+				if (data == 'success') {
+					$.messager.alert("信息提示", "修改成功", "info")
+				}
+			}
+		})
+	}
+	//修改数据
+	function updateWin() {
+		var row = $('#myTable').datagrid("getSelected");
+		//打开弹窗
+		$("#mywindow").window("open");
+		//把选中行的数据加载到表单myForm中
+		$("#myForm").form("load", row);
+
+		//$("#qId").val(row.qId)
+		//eaysui设置值
+		//$("#qId").textbox("setValue",row.qId)
+
+		//取值
+		//var ss =$("#qId").textbox("getValue");
+		console.log(row);
+	}
+	//查询
+	function search() {
+		$('#myTable').datagrid("load", {
+			q_content : $("#qContentSearch").val()
+		})
+	}
+	$(function() {
+		//加载数据
+		loadQuestion();
+		$("#mywindow").window("close");
+		$("#addwindow").window("close");
+	})
+	function loadQuestion() {
+		//表格的配置信息
+		$('#myTable').datagrid({
+			title : '题库列表', //表格名称
+			iconCls : 'icon-save', //图标
+			height : 'auto', //表格高度，可指定高度，可自动
+			border : true, //表格是否显示边框
+			url : 'question.do', //获取表格数据时请求的地址
+			method : 'post', //表格数据获取方式,请求地址是上面定义的url
+			fitColumns : true, //True 就会自动扩大或缩小列的尺寸以适应表格的宽度并且防止水平滚动。
+			columns : [ [ {
+				field : 'qId',
+				title : '题号',
+				width : 8,
+				sortable : true, //排序字段
+				hidden : false
+			}, {
+				field : 'qContent',
+				title : '题目',
+				width : 60
+
+			}, 
+			{
+				field : 'score',
+				title : '分数',
+				width : 60
+
+			}, 
+			{
+				field : 'answer',
+				title : '答案',
+				width : 60
+
+			}, 
+			{
+				field : 'qt',
+				title : '题型',
+				width : 10,
+				formatter : function(value, rowData, rowIndex) {
+					return value.questionTypeName;
+				}
+			}
+
+			] ],
+			pagination : true, //如果表格需要支持分页，必须设置该选项为true
+			pageSize : 5, //表格中每页显示的行数
+			pageList : [ 5, 10, 15 ],
+
+			striped : true, //奇偶行是否使用不同的颜色
+			remoteSort : false, //是否从服务器排序数
+			sortName : 'qId', //按照ID列的值排序
+			sortOrder : 'asc', //使用倒序排序 */
+			idField : 'qId',
+			loadMsg : '数据正在努力加载，请稍后...', //加载数据时显示提示信息
+			frozenColumns : [ [ //固定在表格左侧的复选框
+			{
+				field : 'ck',
+				checkbox : true
+			}, ] ]
+		})
+	}
+</script>
+</html>

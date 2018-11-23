@@ -1,0 +1,10 @@
+package com.xhu.service;
+
+import java.util.HashMap;
+
+import com.xhu.entity.Question;
+
+public interface QuestionService {
+
+	HashMap<String,Object> searchQueston(Question q);
+}

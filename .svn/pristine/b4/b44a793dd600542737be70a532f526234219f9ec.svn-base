@@ -1,0 +1,197 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<title>试卷</title>
+<link href="lib/css/default/easyui.css" type="text/css" rel="stylesheet">
+<link href="lib/css/icon.css" type="text/css" rel="stylesheet">
+<script src="lib/js/jquery.min.js"></script>
+<script src="lib/js/jquery.easyui.min.js"></script>
+<script src="lib/js/easyui-lang-zh_CN.js"></script>
+</head>
+<body class="easyui-layout">
+
+	<!--头部导航栏部分开始-->
+	<div region="north" split="false"
+		style="height: 33px; background-color: #e3eefe">
+		<span style="margin-left: 2%;"> <a href="#"
+			class="easyui-linkbutton" iconCls="icon-man" plain="true">admin</a>
+		</span> <span style="margin-left: 10%;"> <a href="#"
+			class="easyui-linkbutton" iconCls="icon-back" plain="true">首页</a> <a
+			href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改个人信息</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-undo"
+			plain="true">退出系统</a>
+		</span> <span style="margin-left: 50%;"> <a href="#"
+			class="easyui-linkbutton" iconCls="icon-tip" plain="true"><span
+				id="presentTime"></span></a>
+		</span>
+		<script>
+			var myDate = new Date();
+			$("#presentTime").html("日期:" + myDate.toLocaleDateString());
+		</script>
+	</div>
+	<!--头部导航栏部分结束-->
+	<!--底部开始-->
+	<div region="south" split="false"
+		style="height: 28px; background-color: #e3eefe">
+		<span style="margin-left: 40%;"> <a href="#"
+			class="easyui-linkbutton" iconCls="icon-search" plain="true">版本号:20180803V</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-large-shapes"
+			plain="true">版权所有:华清远见</a> <a href="#" class="easyui-linkbutton"
+			iconCls="icon-help" plain="true">如有疑问请联系技术人员</a>
+		</span>
+
+	</div>
+	<!--底部结束-->
+
+	<!--左边导航栏部分开始-->
+	<div region="west" title="导航菜单" style="width: 200px;">
+		<!--树形导航菜单开始-->
+		<ul id="mytree" class="easyui-tree"></ul>
+		<!--树形导航菜单结束-->
+	</div>
+	<!--左边导航栏部分结束-->
+
+	<!--中间工作区域开始-->
+	<div region="center">
+
+		<div id="contentInfo" class="easyui-tabs"
+			data-options="tools:'#tab-tools'" style="height: 100%;">
+			<div title="首页">
+
+				<div class="easyui-panel"
+					style="width: 100%; height: 100%; padding: 10px;">
+					<div class="easyui-layout" data-options="fit:true">
+						<div data-options="region:'west',title:'今天需要参加的考试',split:true"
+							style="width: 200px; padding: 10px">今天需要参加的考试</div>
+
+						<div data-options="region:'center',title:'最新公告'"
+							style="padding: 10px">
+							<table id="newstable"></table>
+							<div id="aa" fit="true" class="easyui-accordion"
+								style="width: 300px; height: 200px;">
+								<div title="公告" id="content"
+									data-options="iconCls:'icon-mini-edit',selected:true"
+									style="overflow: auto; padding: 10px;">
+									<h3 style="color: #0099FF;">Accordion for jQuery</h3>
+									<p>Accordion is a part of easyui framework for jQuery. It
+										lets you define your accordion component on web page more
+										easily.</p>
+								</div>
+								<div title="Title2" data-options="iconCls:'icon-reload'"
+									style="padding: 10px;">content2</div>
+								<div title="Title3">content3</div>
+							</div>
+							<script>
+								$('#content').html("这是公告内容");
+							</script>
+							<script type="text/javascript">
+								$('#aa').accordion({
+									animate : true
+								});
+							</script>
+						</div>
+						<div data-options="region:'east',title:'本月的考试信息'"
+							style="width: 200px; padding: 10px">本月的考试信息</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!--中间工作区域结束-->
+</body>
+<script>
+	$(function() {
+		//加载日期
+		loadnews();
+		//加载数据
+		$('#mytree').tree({
+			url : 'tree.do', //地址
+			method : "get", //提交方式
+			//当节点被选中时触发的事件
+			onSelect : function(node) {
+				if (node.text == "新增") {
+					addTab("新增", "questionPage.do")
+				} else if (node.text == "修改") {
+					addTab("试卷", "paperPage.do")
+				} else if (node.text == "新增成绩") {
+					addTab("新增成绩", "新增成绩.html")
+				} else if (node.text == "删除成绩") {
+					addTab("删除成绩", "删除成绩.html")
+				}
+
+			}
+
+		});
+
+	})
+
+	//动态添加tab选项卡
+	function addTab(title, url) {
+		//如果选项卡已经被打开，就选中它，否则，重新打开
+		if ($('#contentInfo').tabs('exists', title)) {
+			$('#contentInfo').tabs('select', title);
+		} else {
+			var content = '<iframe scrolling="auto" frameborder="0"  src="'
+					+ url + '" style="width:100%;height:100%;"></iframe>';
+			$('#contentInfo').tabs('add', {
+				title : title,//标题
+				content : content,//拼接的html
+				closable : true
+			//是否有关闭按钮，true是有，fasle是没有
+			});
+		}
+	}
+	function loadnews() {
+		//表格的配置信息
+		$('#newstable').datagrid({
+			title : '公告信息', //表格名称
+			iconCls : 'icon-save', //图标
+			height : 'auto', //表格高度，可指定高度，可自动
+			border : true, //表格是否显示边框
+			url : '../json/student.json', //获取表格数据时请求的地址
+			method : 'get', //表格数据获取方式,请求地址是上面定义的url
+			fitColumns : true, //True 就会自动扩大或缩小列的尺寸以适应表格的宽度并且防止水平滚动。
+			columns : [ [ {
+				field : 'stuNo',
+				title : '标题',
+				width : 100,
+				sortable : true, //排序字段
+				hidden : false
+			}, {
+				field : 'stuName',
+				title : '内容',
+				width : 100
+
+			}, {
+				field : 'age',
+				title : '时间',
+				width : 100,
+				hidden : false
+
+			}
+
+			] ],
+			pagination : true, //如果表格需要支持分页，必须设置该选项为true
+			pageSize : 2, //表格中每页显示的行数
+			pageList : [ 2, 5, 10 ],
+
+			striped : true, //奇偶行是否使用不同的颜色
+			remoteSort : false, //是否从服务器排序数
+			sortName : 'stuNo', //按照ID列的值排序
+			sortOrder : 'asc', //使用倒序排序 */
+			idField : 'stuNo',
+			loadMsg : '数据正在努力加载，请稍后...', //加载数据时显示提示信息
+			frozenColumns : [ [ //固定在表格左侧的复选框
+			{
+				field : 'ck',
+				checkbox : true
+			}, ] ]
+
+		})
+
+	}
+</script>
+</html>

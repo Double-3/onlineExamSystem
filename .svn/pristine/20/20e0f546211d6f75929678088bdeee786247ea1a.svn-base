@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xhu.dao.QusetionDao">
+	<resultMap id="BaseResultMap" type="com.xhu.entity.Question">
+		<id column="q_id" property="q_id" jdbcType="INTEGER" />
+		<result column="q_content" property="q_content" jdbcType="VARCHAR" />
+		<result column="q_type" property="q_type" jdbcType="INTEGER" />
+		<result column="a_option" property="a_option" jdbcType="VARCHAR" />
+		<result column="b_option" property="b_option" jdbcType="VARCHAR" />
+		<result column="c_option" property="c_option" jdbcType="VARCHAR" />
+		<result column="d_option" property="d_option" jdbcType="VARCHAR" />
+		<result column="answer" property="answer" jdbcType="VARCHAR" />
+		<association property="qt" javaType="com.xhu.entity.Qtype">
+			<result column="qt_name" property="qt_name" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	<!--分页查询 -->
+	<select id="searchQuestion" resultMap="BaseResultMap"
+		parameterType="com.xhu.entity.Question">
+		select q.* ,qt.qt_name from question q LEFT JOIN qtype qt on
+		q.q_type=qt.qt_id
+		<trim prefix="where " suffix=" " suffixOverrides="and">
+			<if test="q_content != null ">
+				q_content like "%"#{q_content,jdbcType=VARCHAR}"%" and
+			</if>
+			<if test="q_type !=0">
+				q_type = #{q_type ,jdbcType=VARCHAR} and
+			</if>
+		</trim>
+		limit #{page},#{rows}
+	</select>
+	<!--查询总条数 -->
+	<select id="searchCount" resultType="java.lang.Integer"
+		parameterType="com.xhu.entity.Question">
+		select count(q_id) from question q LEFT JOIN qtype qt on
+		q.q_type=qt.qt_id
+		<trim prefix="where " suffix=" " suffixOverrides="and">
+			<if test="q_content != null ">
+				q_content like "%"#{q_content,jdbcType=VARCHAR}"%" and
+			</if>
+			<if test="q_type != 0">
+				q_type = #{q_type ,jdbcType=VARCHAR} and
+			</if>
+		</trim>
+	</select>
+</mapper>

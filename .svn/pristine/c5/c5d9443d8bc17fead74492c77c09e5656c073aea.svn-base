@@ -1,0 +1,23 @@
+package com.xhu.dao;
+
+import java.util.List;
+
+import com.xhu.entity.Question;
+
+public interface QuestionMapper {
+    int deleteByPrimaryKey(Integer qId);
+
+    int insert(Question record);
+
+    int insertSelective(Question record);
+
+    Question selectByPrimaryKey(Integer qId);
+
+    int updateByPrimaryKeySelective(Question record);
+
+    int updateByPrimaryKey(Question record);
+    //≤È—ØÃ‚ø‚
+    List<Question> searchQuestion(Question q);
+    
+    int searchCount(Question q);
+}

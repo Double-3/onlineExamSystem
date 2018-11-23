@@ -1,0 +1,29 @@
+package com.xhu.serviceImp;
+
+import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.xhu.dao.QuestionMapper;
+import com.xhu.entity.Question;
+import com.xhu.service.QuestionService;
+
+@Service
+public class QuestionServiceImp implements QuestionService {
+
+	@Autowired
+	private QuestionMapper questionmapper;
+
+	@Override
+	public HashMap<String, Object> searchQueston(Question q) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		q.setPage(q.getRows() * (q.getPage() - 1));
+		// TODO Auto-generated method stub
+		map.put("total", questionmapper.searchCount(q));
+		map.put("rows", questionmapper.searchQuestion(q));
+		return map;
+	}
+	
+	
+}

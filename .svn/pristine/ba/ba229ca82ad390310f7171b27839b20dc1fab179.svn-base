@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xhu.dao.NewsMapper" >
+  <resultMap id="BaseResultMap" type="com.xhu.entity.News" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="news_content" property="newsContent" jdbcType="VARCHAR" />
+    <result column="publish_time" property="publishTime" jdbcType="DATE" />
+    <result column="news_title" property="newsTitle" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, news_content, publish_time, news_title
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from news
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from news
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xhu.entity.News" >
+    insert into news (id, news_content, publish_time, 
+      news_title)
+    values (#{id,jdbcType=INTEGER}, #{newsContent,jdbcType=VARCHAR}, #{publishTime,jdbcType=DATE}, 
+      #{newsTitle,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xhu.entity.News" >
+    insert into news
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="newsContent != null" >
+        news_content,
+      </if>
+      <if test="publishTime != null" >
+        publish_time,
+      </if>
+      <if test="newsTitle != null" >
+        news_title,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="newsContent != null" >
+        #{newsContent,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null" >
+        #{publishTime,jdbcType=DATE},
+      </if>
+      <if test="newsTitle != null" >
+        #{newsTitle,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xhu.entity.News" >
+    update news
+    <set >
+      <if test="newsContent != null" >
+        news_content = #{newsContent,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null" >
+        publish_time = #{publishTime,jdbcType=DATE},
+      </if>
+      <if test="newsTitle != null" >
+        news_title = #{newsTitle,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xhu.entity.News" >
+    update news
+    set news_content = #{newsContent,jdbcType=VARCHAR},
+      publish_time = #{publishTime,jdbcType=DATE},
+      news_title = #{newsTitle,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

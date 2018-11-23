@@ -1,0 +1,33 @@
+package com.xhu.util;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.xhu.entity.Node;
+
+@Component
+public class Tree {
+	public List<Node> createTree(LinkedList<Node> list) {
+		// poll方法检索并移除此列表的头元素并且返回列表的头元素
+		Node n = list.poll();
+		// 创建一个新的集合来加载树形数据
+		LinkedList<Node> newList = new LinkedList<Node>();
+		/**
+		 * 遍历集合，如果此节点有子节点，就添加到他的子节点集合里
+		 */
+		for (Node node : list) {
+			if (node.getParentId() == n.getId()) {
+				n.getChildren().add(node);
+			}
+		}
+		// 把节点添加到新集合中去
+		newList.add(n);
+		if (list.size() > 0) {
+			createTree(list);
+		}
+
+		return newList;
+	}
+}
