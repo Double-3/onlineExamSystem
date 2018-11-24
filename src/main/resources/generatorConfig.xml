@@ -12,7 +12,7 @@
 
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
 			connectionURL="jdbc:mysql://localhost:3306/exam" userId="root"
-			password="123" />
+			password="root" />
 		<!-- 生成实体类 实体bean文件 -->
 		<javaModelGenerator targetPackage="com.xhu.entity"
 			targetProject="OnlineExamSystem" />
