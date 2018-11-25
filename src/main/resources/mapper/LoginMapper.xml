@@ -28,7 +28,7 @@
 		
 		
 		<insert id="insertUser">
-			insert into user(user_name,password,email) values(#{username},#{password},#{email})
+			insert into user(user_name,password,email,phone) values(#{username},#{password},#{email},#{phone})
 		</insert>
 		
 		<insert id="insertstudent">

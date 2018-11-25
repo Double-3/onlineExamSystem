@@ -10,7 +10,7 @@
 		   http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<!--扫描service包下注解 -->
-	<context:component-scan base-package="com.xhu.serviceImp" />
+	<context:component-scan base-package="com.xhu" />
 
 	<!-- 配置事务管理器 -->
 	<!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 

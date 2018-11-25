@@ -29,14 +29,14 @@ public class LoginServiceImp implements LoginService{
 	//注册、事务回滚
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW,timeout=2)
-	public int insertUser(String username, String password, String cnUser,String email, int clazz, int department,String role) {
+	public int insertUser(String phone,String username, String password, String cnUser,String email, int clazz, int department,String role) {
 		int insertNum = 0;
 		int insertUserNum = 0;
 		int insertStudentNum = 0;
 		String randomID = (int)(Math.random()*90000+10000)+"";      //自动生成学号     0<=Math.random()<0  10000~99999  random*(b-a+1)+a
 		try {
 			try {
-				insertNum = loginDao.insertUser(username, password,email);
+				insertNum = loginDao.insertUser(phone,username, password,email);
 			} catch (Exception e) {
 				TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();    //手动回滚
 				throw new InsertException("账号已被注册");

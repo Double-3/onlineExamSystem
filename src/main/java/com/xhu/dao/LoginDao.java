@@ -10,7 +10,7 @@ import com.xhu.entity.User;
 public interface LoginDao {
 	public User selectByUsername(@Param("username")String username);
 	
-	public int insertUser(@Param("username")String username,@Param("password")String password,@Param("email")String email);
+	public int insertUser(@Param("phone")String phone,@Param("username")String username,@Param("password")String password,@Param("email")String email);
 	public int insertstudent(@Param("cnUser")String cnUser,@Param("stuID")String stuID,@Param("clazzID")int clazzID,@Param("departmentID")int departmentID,@Param("username")String username);
 	public int searchRoleID(@Param("role")String role);
 	public int searchUserID(@Param("userID")String username);

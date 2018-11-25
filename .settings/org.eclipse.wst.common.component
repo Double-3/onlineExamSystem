@@ -5,6 +5,9 @@
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <dependent-module archiveName="aliyun-java-sdk-dysmsapi-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/aliyun-java-sdk-dysmsapi/aliyun-java-sdk-dysmsapi">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="OnlineExamSystem"/>
         <property name="java-output-path" value="/OnlineExamSystem/target/classes"/>
     </wb-module>

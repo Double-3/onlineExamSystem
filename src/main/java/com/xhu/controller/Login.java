@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.xhu.common.api.Sms;
 import com.xhu.entity.SelectInfor;
 import com.xhu.entity.User;
 import com.xhu.serviceImp.LoginServiceImp;
@@ -23,6 +26,8 @@ public class Login {
 	private static String changeStatus="nullInfor";
 	@Autowired
 	private LoginServiceImp loginService;
+	@Autowired
+	private Sms sms;
 	
 	@RequestMapping("/index")
 	public String login(){
@@ -76,13 +81,14 @@ public class Login {
 	@RequestMapping("/doregist")
 	@ResponseBody
 	public String doRegist(HttpServletRequest http){
+		String phone = http.getParameter("phone");
 		String username = http.getParameter("username");
 		String cnUser = http.getParameter("cnUser");
 		String email = http.getParameter("email");
 		String password = http.getParameter("password");
 		int clazz = Integer.parseInt(http.getParameter("clazz"));
 		int department = Integer.parseInt(http.getParameter("department"));
-		int num = loginService.insertUser(username, password, cnUser,email, clazz, department,"student");
+		int num = loginService.insertUser(phone,username, password, cnUser,email, clazz, department,"student");
 		if(num>0){
 			return "success";
 		}
@@ -91,6 +97,41 @@ public class Login {
 		}
 		else{
 			return "doAgin";
+		}
+	}
+	@RequestMapping("/getVerify")
+	@ResponseBody
+	public String getVerify(HttpServletRequest http){
+		String phone = http.getParameter("phone");
+		SendSmsResponse sendSms = null;
+		String msg = "发送失败,请稍后再试";
+		try {
+			String note = "";
+	        for(int i=0;i<4;i++) {
+	        	note=note+(int)Math.floor(Math.random()*10);
+	        }
+	        HttpSession session = http.getSession();
+	        session.setAttribute("note", note);
+			sendSms = sms.sendSms(phone,note);
+			if(sendSms!=null){
+				msg = "发送成功,请在5分钟内提交";
+				return msg;
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return msg;
+	}
+	@RequestMapping("/doVerify")
+	@ResponseBody
+	public String doVerify(HttpServletRequest http){
+		String code = http.getParameter("code");
+		HttpSession session = http.getSession();
+        String note = (String)session.getAttribute("note");
+		if(code.equals(note)) {
+			return "success";
+		}else {
+			return "fail";
 		}
 	}
 	

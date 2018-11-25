@@ -47,7 +47,7 @@
                 <tr>
                     <td colspan="3" style="text-align:center">
                         <input type="button" value="登录" class="login_btn" onclick="login()"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input id="registbtn" type="button" value="注册" class="login_btn" onclick="regist()"/>
+                        <input id="registbtn" type="button" value="注册" class="login_btn" onclick="verify()"/>
                     </td>
                 </tr>
                 <tr>
@@ -58,7 +58,7 @@
             </table>
         </form>
        </div>
-       
+       <div id="winDiv">
        <div id="changeWin" title="重置密码" class="easyui-window"  style="width:440px;height:200px;padding-top: 20px;" align="center">
         	<table border="0" style="width:350px;" >
         		<tr>
@@ -83,6 +83,36 @@
                     <td></td>
                     <td colspan="1" style="text-align: left;">
                     	<a href="javascript:void(0)"  class="easyui-linkbutton" style="margin-top: 10px;" icon="icon-ok" id="loginbtn" onclick="doChange()">确认</a>		
+                    </td>
+                    <td colspan="1" style="text-align: right: ;">
+                    	<a href="#" class="easyui-linkbutton" style="margin-left: 15%;margin-top: 10px;"  icon="icon-cancel" id="loginbtn" onclick="closeChangeWin()">取消</a>
+                    </td>
+                </tr>
+			</table>
+		</div>
+       <div id="verifyWin" title="验证" class="easyui-window"  style="width:440px;height:200px;padding-top: 20px;" align="center">
+        	<table border="0" style="width:350px;" >
+        		<tr>
+                    <td style="white-space:nowrap; padding-bottom: 5px;width:55px;text-align:right;" >
+                    	<span style="font-size:15px;font-weight: bold;font-family: 微软雅黑;" >手&nbsp;&nbsp;&nbsp;机：</span>
+                    </td>
+                    <td colspan="2">
+                    	<input id="phone" class="easyui-textbox" data-options="prompt:'请输入手机号...'" style="width:90%;height:32px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="white-space:nowrap; padding-bottom: 5px;width:55px;text-align:right;" >
+                    	<span style="font-size:15px;font-weight: bold;font-family: 微软雅黑;" >验证码：</span>
+                    </td>
+                    <td colspan="2">
+                    	<input type="text" id="verifyCode" class="login" style="width: 50px;margin: 10px 2px 3px 3px" />
+ 						<a href="javascript:void(0)"  class="easyui-linkbutton" style="margin-left: 33.3%;" icon="icon-ok" id="verifybtn" onclick="getVerify()">获取验证码</a>	
+                    </td>
+                </tr>
+ 				<tr>
+                    <td></td>
+                    <td colspan="1" style="text-align: left;">
+                    	<a href="javascript:void(0)"  class="easyui-linkbutton" style="margin-top: 10px;" icon="icon-ok" id="loginbtn" onclick="doVerify()">提交</a>		
                     </td>
                     <td colspan="1" style="text-align: right: ;">
                     	<a href="#" class="easyui-linkbutton" style="margin-left: 15%;margin-top: 10px;"  icon="icon-cancel" id="loginbtn" onclick="closeChangeWin()">取消</a>
@@ -130,6 +160,8 @@
 			<a href="javascript:void(0)"  class="easyui-linkbutton" style="margin-left: 33.3%;" icon="icon-ok" id="loginbtn" onclick="doregist()">注册</a>		
 			<a href="#" class="easyui-linkbutton" style="margin-left: 15%;"  icon="icon-cancel" id="loginbtn" onclick="closeWin1()">取消</a>
 		</div>
+       </div>
+		
         
          <%@ include file="loadingDiv.jsp"%> 
    
@@ -137,9 +169,60 @@
      <script type="text/javascript">
 	     $(function(){
 				//默认打开页面，对话框是关闭的
+				//$('.easyui-linkbutton').css('display','none');
 				closeWin();
 			})
-			     
+		 function verify(){
+	    	 $('#verifyWin').window('open');
+	    	 //regist();
+	     }	     
+	     function getVerify(){
+	    	 var phone=$("#phone").val().trim();
+	    	 $("#winDiv").data("phone",phone);
+	    	 console.log("phone",phone);
+	    	 checkPhone();
+	    	 if(checkPhone){
+	    		 $.ajax({
+	            		type: 'POST',
+	     				url:"<%=request.getContextPath() %>/login/getVerify",
+	     				data:{
+	     					"phone":phone
+	     					},
+	     				success:function(msg){
+	     					alert(msg);
+	     				}
+	     			})
+	    	 }
+	     }
+	     function doVerify(){
+	    	 var code=$("#verifyCode").val().trim();
+	    	 if(code==null || code.length==0){
+	    		 alert("请输入验证码!");
+	    	 }else{
+		    	 $.ajax({
+	         		type: 'POST',
+	  				url:"<%=request.getContextPath() %>/login/doVerify",
+	  				data:{
+	  					"code":code
+	  					},
+	  				success:function(msg){
+	  					if(msg=="success"){
+	  						regist();
+	  					}
+	  					if(msg=="fail"){
+	  						alert("验证失败,请稍后再试");
+	  					}
+	  				}
+	  			})
+	    	 }
+	     }
+	     function checkPhone(){ 
+	    	    var phone = document.getElementById('phone').value;
+	    	    if(!(/^1[34578]\d{9}$/.test(phone))){ 
+	    	        alert("手机号码有误，请重填");  
+	    	        return false; 
+	    	    } 
+	    	}
          function regist(){
         	 $('#myClass').combobox({
 			 		url:'<%=request.getContextPath()%>/login/getInfor1',
@@ -173,6 +256,7 @@
 	     function closeWin(){
 				$('#registWin').window('close');
 				$('#changeWin').window('close');
+				$('#verifyWin').window('close');
 		}
 	     
 		 function closeWin1(){
@@ -204,8 +288,12 @@
      			alert("用户名不能含有中文字符");
      			return false;
      		}
-     		if(username.length<6||username.length>15){
+     		if(password.length<=6||password.length>15){
      			alert("密码应该大于6位，小于15位！")
+     			return false;
+     		}
+     		if(username.length<6||username.length>15){
+     			alert("用户名应该大于6位，小于15位！")
      			return false;
      		}
      		if(cnUser==""||cnUser==null){
@@ -241,6 +329,7 @@
      	} 
      	 
      	function doregist(){
+     		var phone = $("#winDiv").data("phone");
      		var username = $("#user").val().trim();
      		var cnUser = $("#cnUser").val().trim();
      		var email = $("#newEmail").val().trim();
@@ -253,6 +342,7 @@
             		type: 'POST',
      				url:"<%=request.getContextPath() %>/login/doregist",
      				data:{
+     					"phone":phone,
      					"username":username,
      					"cnUser":cnUser,
      					"email":email,
